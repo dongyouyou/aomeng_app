@@ -1,0 +1,148 @@
+<!-- 浮动装饰元素 -->
+<view class="floating-element element-1"></view>
+<view class="floating-element element-2"></view>
+<view class="floating-element element-3"></view>
+
+<view class="container safe-area-bottom">
+  <!-- 新增：会员提示栏 -->
+  <view class="member-tip-bar" wx:if="{{showMemberTip}}" bindtap="goToMembership">
+    <view class="tip-pattern tip-pattern-1"></view>
+    <view class="tip-pattern tip-pattern-2"></view>
+    <view class="tip-left">
+      <view class="tip-icon">👑</view>
+      <view class="tip-text">开通会员可查看全部奥特曼英雄（当前仅显示{{ultramanList.length}}位）</view>
+    </view>
+    <view class="tip-action">立即开通</view>
+    <view class="tip-shine-effect"></view>
+  </view>
+
+  <view class="hero-grid">
+    <view class="hero-card" 
+          wx:for="{{ultramanList}}" 
+          wx:key="id" 
+          bindtap="selectHero" 
+          data-id="{{item.id}}">
+      <image class="hero-image" src="{{item.image}}" mode="aspectFit"/>
+      <view class="hero-info">
+        <view class="hero-name">{{item.name}}</view>
+        <view class="hero-brief">{{item.description}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 非会员时显示提示卡片 -->
+  <view class="member-promo-card" wx:if="{{showMemberTip}}">
+    <view class="promo-content">
+      <view class="promo-icon">🔒</view>
+      <view class="promo-text">
+        <text class="promo-title">解锁全部奥特曼英雄</text>
+        <text class="promo-desc">成为会员，立即解锁全部奥特曼英雄，并享受更多专属特权！</text>
+      </view>
+      <button class="promo-btn" bindtap="goToMembership">立即开通</button>
+    </view>
+  </view>
+
+  <!-- 全屏详情弹窗 -->
+  <view class="detail-modal {{selectedId !== null ? 'show' : ''}}" catchtap="closeDetail">
+    <view class="modal-content" catchtap="stopPropagation" wx:if="{{selectedHero}}">
+      <view class="modal-header">
+        <text class="modal-title">{{selectedHero.name}}</text>
+        <view class="header-actions">
+          <view class="action-icon {{favorites.includes(selectedHero.id) ? 'active' : ''}}" catchtap="toggleFavorite">
+            ★
+          </view>
+          <button class="share-btn" open-type="share">
+            <text>↗</text>
+          </button>
+          <view class="close-btn" catchtap="closeDetail">×</view>
+        </view>
+      </view>
+      
+      <scroll-view scroll-y class="modal-body">
+        <image class="detail-image" src="{{selectedHero.image}}" mode="aspectFit"/>
+        
+        <!-- 标签页导航 -->
+        <view class="tab-nav">
+          <view class="tab-item {{currentTab === 'info' ? 'active' : ''}}" 
+                bindtap="switchTab" 
+                data-tab="info">基本信息</view>
+          <view class="tab-item {{currentTab === 'story' ? 'active' : ''}}" 
+                bindtap="switchTab" 
+                data-tab="story">英雄故事</view>
+          <view class="tab-item {{currentTab === 'interaction' ? 'active' : ''}}" 
+                bindtap="switchTab" 
+                data-tab="interaction">互动专区</view>
+        </view>
+
+        <!-- 基本信息标签页 -->
+        <view class="tab-content" hidden="{{currentTab !== 'info'}}">
+          <text class="detail-desc">{{selectedHero.description}}</text>
+          
+          <view class="status-list">
+            <view class="status-item">
+              <text class="status-label">力量值</text>
+              <text class="status-value">{{selectedHero.power || 85}}</text>
+            </view>
+            <view class="status-item">
+              <text class="status-label">敏捷度</text>
+              <text class="status-value">{{selectedHero.agility || 80}}</text>
+            </view>
+            <view class="status-item">
+              <text class="status-label">智力值</text>
+              <text class="status-value">{{selectedHero.intelligence || 90}}</text>
+            </view>
+            <view class="status-item">
+              <text class="status-label">防御力</text>
+              <text class="status-value">{{selectedHero.defense || 75}}</text>
+            </view>
+          </view>
+          
+          <view class="hero-actions">
+            <view class="action-button like-button {{isLiked ? 'active' : ''}}" bindtap="toggleLike">
+              <text class="action-icon">♥</text>
+              <text class="action-label">喜欢</text>
+            </view>
+            <view class="action-button" bindtap="showComments">
+              <text class="action-icon">💬</text>
+              <text class="action-label">评论</text>
+            </view>
+            <view class="action-button" bindtap="shareHero">
+              <text class="action-icon">↗</text>
+              <text class="action-label">分享</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 英雄故事标签页 -->
+        <view class="tab-content" hidden="{{currentTab !== 'story'}}">
+          <view class="story-title">{{selectedHero.name}}的故事</view>
+          <view class="hero-story">
+            {{selectedHero.story || '这位英雄的故事正在创作中，敬请期待...'}}
+          </view>
+        </view>
+
+        <!-- 互动专区标签页 -->
+        <view class="tab-content" hidden="{{currentTab !== 'interaction'}}">
+          <view class="interactions">
+            <view class="interaction-card" bindtap="startBattle">
+              <view class="interaction-icon">⚔️</view>
+              <view class="interaction-label">对战模式</view>
+            </view>
+            <view class="interaction-card" bindtap="startQuiz">
+              <view class="interaction-icon">❓</view>
+              <view class="interaction-label">知识问答</view>
+            </view>
+            <view class="interaction-card" bindtap="viewGallery">
+              <view class="interaction-icon">🖼️</view>
+              <view class="interaction-label">图片集</view>
+            </view>
+            <view class="interaction-card" bindtap="viewVideo">
+              <view class="interaction-icon">▶️</view>
+              <view class="interaction-label">视频集</view>
+            </view>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+  </view>
+</view>

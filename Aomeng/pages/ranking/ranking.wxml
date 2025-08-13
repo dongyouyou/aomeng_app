@@ -1,0 +1,91 @@
+<!-- 浮动装饰元素 -->
+<view class="container">
+  <view class="content-wrapper">
+    <!-- 会员提示栏 -->
+    <view class="member-info-bar" wx:if="{{!isMember && fullListLength > limitedRanking}}">
+      <text class="member-info-text">👑 查看全部奥特曼排名，请开通会员</text>
+      <button class="member-info-btn" bindtap="goToMembership">开通会员</button>
+    </view>
+    
+    <!-- 排行标签切换 -->
+    <view class="tabs">
+      <view class="tab {{activeTab === 'power' ? 'active' : ''}}" bindtap="switchTab" data-tab="power">力量排行</view>
+      <view class="tab {{activeTab === 'speed' ? 'active' : ''}}" bindtap="switchTab" data-tab="speed">速度排行</view>
+      <view class="tab {{activeTab === 'height' ? 'active' : ''}}" bindtap="switchTab" data-tab="height">身高排行</view>
+      <view class="tab {{activeTab === 'weight' ? 'active' : ''}}" bindtap="switchTab" data-tab="weight">体重排行</view>
+    </view>
+
+    <!-- 标题动画 -->
+    <view class="ranking-title">
+      <text class="title-text">{{activeTab === 'power' ? '力量英雄' : activeTab === 'speed' ? '速度英雄' : activeTab === 'height' ? '高大英雄' : '重量级英雄'}}</text>
+      <text class="title-crown">👑</text>
+    </view>
+
+    <!-- 排行榜列表 -->
+    <view class="ranking-list">
+      <!-- 列表头部 -->
+      <view class="list-header" wx:if="{{rankList.length > 0}}">
+        <text class="header-rank">排名</text>
+        <text class="header-hero">英雄</text>
+        <text class="header-value">{{activeTab === 'power' ? '力量值' : activeTab === 'speed' ? '速度值' : activeTab === 'height' ? '身高(m)' : '体重(t)'}}</text>
+      </view>
+      
+      <!-- 数据加载中 -->
+      <view class="loading-container" wx:if="{{isLoading}}">
+        <view class="loading-icon"></view>
+        <text class="loading-text">数据加载中...</text>
+      </view>
+      
+      <!-- 空数据提示 -->
+      <view class="empty-container" wx:if="{{!isLoading && rankList.length === 0}}">
+        <text class="empty-text">暂无数据</text>
+        <text class="empty-tip">请检查数据源是否正确</text>
+      </view>
+      
+      <!-- 排行列表 -->
+      <view class="rank-item {{index < 3 ? 'top-three top-' + (index + 1) : ''}} {{!isMember && index >= limitedRanking ? 'locked' : ''}}" 
+            wx:for="{{rankList}}" 
+            wx:key="id" 
+            bindtap="goToDetail" 
+            data-hero="{{item}}"
+            data-index="{{index}}">
+        <view class="rank-number">
+          <text class="rank-text">{{index + 1}}</text>
+          <view class="medal" wx:if="{{index < 3}}">
+            <text class="medal-icon">{{index === 0 ? '🥇' : index === 1 ? '🥈' : '🥉'}}</text>
+          </view>
+        </view>
+        <view class="hero-info">
+          <image class="hero-image" src="{{item.image}}" mode="aspectFit"></image>
+          <text class="hero-name">{{item.name}}</text>
+        </view>
+        <view class="hero-value-container">
+          <text class="hero-value">
+            {{activeTab === 'power' ? item.power : 
+              activeTab === 'speed' ? item.speed : 
+              activeTab === 'height' ? item.height : 
+              item.weight}}
+          </text>
+          <view class="stat-bar">
+            <view class="stat-value" style="width: {{getStatPercentage(item)}}%"></view>
+          </view>
+        </view>
+      </view>
+      
+      <!-- 会员解锁提示 -->
+      <view class="locked-rank-item" wx:if="{{!isMember && fullListLength > limitedRanking}}" bindtap="showMemberTip">
+        <view class="lock-icon">🔒</view>
+        <text class="lock-text">会员可查看更多排名</text>
+        <button class="lock-button" catchtap="goToMembership">开通会员</button>
+      </view>
+    </view>
+    
+    <!-- 调试信息 -->
+    <view class="debug-info" wx:if="{{showDebug}}">
+      <text class="debug-title">调试信息:</text>
+      <text class="debug-text">活动标签: {{activeTab}}</text>
+      <text class="debug-text">列表长度: {{rankList.length}}</text>
+      <text class="debug-text">最大值: {{maxValue}}</text>
+    </view>
+  </view>
+</view>

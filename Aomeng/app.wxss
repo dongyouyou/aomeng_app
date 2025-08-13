@@ -1,0 +1,43 @@
+/**app.wxss**/
+
+page {
+  --card-gap: 12rpx;
+  --page-padding: 16rpx;
+  --primary-color: #FF6B6B;
+  --secondary-color: #4ECDC4;
+  --accent-color: #FFE66D;
+  --background-gradient: linear-gradient(180deg, #B6FFFA 0%, #FFF6BD 100%);
+  --card-background: rgba(255, 255, 255, 0.85);
+  --card-shadow: 0 8rpx 20rpx rgba(0, 0, 0, 0.1);
+  --text-color: #333333;
+  --text-secondary: #666666;
+  --border-radius: 20rpx;
+  --hero-name-font: bold 36rpx/1.2 'YouYuan', 'Yuanti SC', sans-serif;
+  --button-gradient: linear-gradient(90deg, #FF9A8B 0%, #FF6A88 55%, #FF99AC 100%);
+  font-family: 'Yuanti SC', 'YouYuan', 'Microsoft YaHei', sans-serif;
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+/* 全局动画效果 */
+@keyframes float {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-10rpx); }
+  100% { transform: translateY(0); }
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+/* 安全区域适配 */
+.safe-area-bottom {
+  padding-bottom: constant(safe-area-inset-bottom); /* iOS 11.2以下 */
+  padding-bottom: env(safe-area-inset-bottom); /* iOS 11.2+ */
+}
+
+/* 移除默认的flex布局 */

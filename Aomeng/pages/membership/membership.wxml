@@ -1,0 +1,195 @@
+<!-- 浮动装饰元素 -->
+<view class="floating-element element-1"></view>
+<view class="floating-element element-2"></view>
+<view class="floating-element element-3"></view>
+
+<view class="membership-container">
+  <!-- 会员状态卡片 -->
+  <view class="member-status-card">
+    <view class="status-header">
+      <text class="status-title">会员状态</text>
+      <text class="status-tag {{isMember ? 'member' : 'normal'}}">{{isMember ? '会员' : '普通用户'}}</text>
+    </view>
+    <view class="status-body">
+      <view class="avatar-section">
+        <view class="user-avatar-bg {{isMember ? 'gold-border' : ''}}">
+          <text class="avatar-text">{{userInfo.nickname ? userInfo.nickname.substring(0,1) : (userInfo.nickName ? userInfo.nickName.substring(0,1) : '奥')}}</text>
+          <view wx:if="{{isMember}}" class="crown-icon">👑</view>
+        </view>
+      </view>
+      <view class="status-info">
+        <text class="user-name">{{userInfo.nickname || userInfo.nickName || '奥特曼迷'}}</text>
+        <text wx:if="{{isMember}}" class="expire-date">有效期至: {{formattedExpireDate}}</text>
+        <text wx:else class="expire-date">尚未开通会员</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 公告部分 -->
+  <view class="announcement-section">
+    <view class="section-header">
+      <text class="section-title">最新公告</text>
+    </view>
+    <view class="announcement-card">
+      <view class="announcement-item" wx:for="{{announcements}}" wx:key="id">
+        <view class="announcement-date">{{item.date}}</view>
+        <view class="announcement-content">{{item.content}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 权益对比部分 -->
+  <view class="benefits-section">
+    <view class="section-header">
+      <text class="section-title">会员特权</text>
+    </view>
+    <view class="benefits-comparison">
+      <view class="benefits-column normal">
+        <view class="benefits-header">
+          <text class="benefits-title">普通用户</text>
+        </view>
+        <view class="benefits-list">
+          <view class="benefit-item">
+            <text class="benefit-icon">✓</text>
+            <text class="benefit-text">可查看8个奥特曼数据</text>
+          </view>
+          <view class="benefit-item">
+            <text class="benefit-icon">✓</text>
+            <text class="benefit-text">每个奥特曼仅可查看3个技能</text>
+          </view>
+          <view class="benefit-item">
+            <text class="benefit-icon">✓</text>
+            <text class="benefit-text">可使用排行榜功能</text>
+          </view>
+          <view class="benefit-item">
+            <text class="benefit-icon">✓</text>
+            <text class="benefit-text">可使用英雄对战功能</text>
+          </view>
+        </view>
+      </view>
+      <view class="benefits-column member">
+        <view class="benefits-header">
+          <text class="benefits-title">会员特权</text>
+        </view>
+        <view class="benefits-list">
+          <view class="benefit-item">
+            <text class="benefit-icon">✓</text>
+            <text class="benefit-text">解锁全部奥特曼数据</text>
+          </view>
+          <view class="benefit-item">
+            <text class="benefit-icon">✓</text>
+            <text class="benefit-text">解锁全部奥特曼技能</text>
+          </view>
+          <view class="benefit-item">
+            <text class="benefit-icon">✓</text>
+            <text class="benefit-text">排行榜查看无限制</text>
+          </view>
+          <view class="benefit-item">
+            <text class="benefit-icon">✓</text>
+            <text class="benefit-text">英雄对战无限制</text>
+          </view>
+          <view class="benefit-item">
+            <text class="benefit-icon">✓</text>
+            <text class="benefit-text">新内容优先体验</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 会员套餐选择 -->
+  <view class="membership-plans">
+    <view class="plan-title">会员套餐</view>
+    <view class="plans-container">
+      <view class="plan-card {{selectedPlan === 'monthly' ? 'selected' : ''}}" 
+            bindtap="selectPlan" 
+            data-plan="monthly">
+        <view class="plan-name">月度会员</view>
+        <view class="plan-price">￥9.90</view>
+        <view class="plan-desc">单月有效期</view>
+        <view class="selection-mark" wx:if="{{selectedPlan === 'monthly'}}">✓</view>
+      </view>
+      
+      <view class="plan-card {{selectedPlan === 'quarterly' ? 'selected' : ''}}" 
+            bindtap="selectPlan" 
+            data-plan="quarterly">
+        <view class="plan-tag">优惠</view>
+        <view class="plan-name">季度会员</view>
+        <view class="plan-price">￥25.80</view>
+        <view class="plan-desc">连续三个月有效期</view>
+        <view class="plan-discount">省￥3.9</view>
+        <view class="selection-mark" wx:if="{{selectedPlan === 'quarterly'}}">✓</view>
+      </view>
+      
+      <view class="plan-card {{selectedPlan === 'yearly' ? 'selected' : ''}}" 
+            bindtap="selectPlan" 
+            data-plan="yearly">
+        <view class="plan-tag">超值</view>
+        <view class="plan-name">年度会员</view>
+        <view class="plan-price">￥89.90</view>
+        <view class="plan-desc">连续十二个月有效期</view>
+        <view class="plan-discount">省￥28.9</view>
+        <view class="selection-mark" wx:if="{{selectedPlan === 'yearly'}}">✓</view>
+      </view>
+    </view>
+    
+    <view class="purchase-btn-container">
+      <button class="purchase-btn" bindtap="showPayment">
+        {{isMember ? '续费会员' : '立即开通'}}
+      </button>
+    </view>
+  </view>
+
+  <!-- 支付弹窗 -->
+  <view class="payment-modal {{showPayment ? 'show' : ''}}" catchtap="hidePayment">
+    <view class="modal-content" catchtap="stopPropagation">
+      <view class="modal-header">
+        <text class="modal-title">选择支付方式</text>
+        <view class="close-btn" catchtap="hidePayment">×</view>
+      </view>
+      
+      <view class="modal-body">
+        <view class="payment-plan-info">
+          <text class="plan-name">{{
+            selectedPlan === 'monthly' ? '月度会员' :
+            selectedPlan === 'quarterly' ? '季度会员' :
+            selectedPlan === 'yearly' ? '年度会员' : '请选择套餐'
+          }}</text>
+          <text class="plan-price">{{
+            selectedPlan === 'monthly' ? '￥9.90' :
+            selectedPlan === 'quarterly' ? '￥25.80' :
+            selectedPlan === 'yearly' ? '￥89.90' : ''
+          }}</text>
+        </view>
+        
+        <view class="payment-methods">
+          <view class="payment-method {{paymentMethod === 'wechat' ? 'selected' : ''}}"
+                bindtap="selectPayment"
+                data-payment="wechat">
+            <view class="method-icon wechat">
+              <text class="icon-text">W</text>
+            </view>
+            <text class="method-name">微信支付</text>
+            <view class="method-check" wx:if="{{paymentMethod === 'wechat'}}">✓</view>
+          </view>
+          
+          <view class="payment-method {{paymentMethod === 'alipay' ? 'selected' : ''}}"
+                bindtap="selectPayment"
+                data-payment="alipay">
+            <view class="method-icon alipay">
+              <text class="icon-text">A</text>
+            </view>
+            <text class="method-name">支付宝</text>
+            <view class="method-check" wx:if="{{paymentMethod === 'alipay'}}">✓</view>
+          </view>
+        </view>
+        
+        <button class="confirm-payment-btn" bindtap="processPayment">确认支付</button>
+        
+        <view class="payment-terms">
+          <text class="terms-text">点击支付即表示同意《会员服务协议》</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

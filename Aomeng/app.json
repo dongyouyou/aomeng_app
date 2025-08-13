@@ -1,0 +1,54 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/ranking/ranking",
+    "pages/compare/compare",
+    "pages/battle/battle",
+    "pages/detail/detail",
+    "pages/mine/mine",
+    "pages/userProfile/userProfile",
+    "pages/membership/membership"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#FF6B6B",
+    "navigationBarTitleText": "奥特曼图鉴",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#fffbe6"
+  },
+  "tabBar": {
+    "color": "#999999",
+    "selectedColor": "#FF6B6B",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "英雄库",
+        "iconPath": "/images/icons/home.png",
+        "selectedIconPath": "/images/icons/home-active.png"
+      },
+      {
+        "pagePath": "pages/ranking/ranking",
+        "text": "排行榜",
+        "iconPath": "/images/icons/rank.png",
+        "selectedIconPath": "/images/icons/rank-active.png"
+      },
+      {
+        "pagePath": "pages/compare/compare",
+        "text": "英雄对战",
+        "iconPath": "/images/icons/vs.png",
+        "selectedIconPath": "/images/icons/vs-active.png"
+      },
+      {
+        "pagePath": "pages/mine/mine",
+        "text": "我的",
+        "iconPath": "/images/icons/home.png",
+        "selectedIconPath": "/images/icons/home-active.png"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

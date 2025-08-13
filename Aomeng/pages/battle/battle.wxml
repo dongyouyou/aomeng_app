@@ -1,0 +1,56 @@
+<view class="battle-container">
+  <!-- GIF展示区域 - 优化布局 -->
+  <view class="gif-display-area" style="height: {{gifContainerHeight}}px">
+    <block wx:if="{{currentSkill && showSkillGif}}">
+      <!-- 加载中状态 -->
+      <view class="loading-container" wx:if="{{isGifLoading}}">
+        <view class="loading-spinner"></view>
+        <text class="loading-text">技能加载中...</text>
+        <image class="skill-gif loading-gif" src="{{currentSkill.gifUrl}}" 
+               mode="aspectFit"
+               bindload="onGifLoaded"
+               binderror="onGifError"
+               lazy-load="{{false}}"
+               style="opacity: 0;"></image>
+      </view>
+      
+      <!-- 加载失败状态 -->
+      <view class="error-container" wx:elif="{{gifLoadFailed}}">
+        <icon type="warn" size="40" color="#ff4d4f"></icon>
+        <text class="error-text">加载失败</text>
+        <view class="error-desc">无法加载技能演示</view>
+        <button class="retry-btn" bindtap="retryLoadGif">重试</button>
+      </view>
+      
+      <!-- 显示GIF -->
+      <image wx:else class="skill-gif" src="{{currentSkill.gifUrl}}" 
+             mode="aspectFill"
+             bindload="onGifLoaded"
+             binderror="onGifError"
+             lazy-load="{{false}}"></image>
+    </block>
+    <view class="placeholder-text" wx:else>
+      <text>⬇️ 点击下方技能按钮查看奥特技能演示 ⬇️</text>
+    </view>
+  </view>
+
+  <!-- 技能网格 -->
+  <view class="skills-section">
+    <view class="section-header">
+      <text class="section-title">{{selectedUltraman.name}}的必杀技</text>
+    </view>
+    
+    <view class="skills-grid">
+      <view class="skill-card {{currentSkill && currentSkill.id === skill.id ? 'active' : ''}}"
+            wx:for="{{ultramanSkills}}" 
+            wx:key="id"
+            wx:for-item="skill"
+            bindtap="demonstrateSkill"
+            data-skill="{{skill}}"
+            hover-class="skill-hover">
+        <text class="skill-card-name">{{skill.name}}</text>
+        <text class="skill-card-desc">{{skill.description}}</text>
+      </view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,146 @@
+<!-- 删除浮动装饰元素 -->
+
+<!-- 添加浮动装饰元素 -->
+<view class="floating-element element-1"></view>
+<view class="floating-element element-2"></view>
+<view class="floating-element element-3"></view>
+
+<view class="mine-container">
+  <!-- 头部背景 -->
+  <view class="header-bg"></view>
+  
+  <!-- 用户信息部分 -->
+  <view class="user-info-section">
+    <view class="user-card">
+      <!-- 未登录状态 -->
+      <block wx:if="{{!isLogged}}">
+        <view class="not-login">
+          <view class="login-content">
+            <view class="login-header">
+              <text class="login-title">您尚未登录</text>
+              <text class="login-subtitle">登录后可以享受更多功能</text>
+            </view>
+            <button class="login-btn" bindtap="showLoginModal">去登录</button>
+          </view>
+        </view>
+      </block>
+      
+      <!-- 已登录状态 -->
+      <block wx:else>
+        <view class="logged-in">
+          <view class="avatar-container">
+            <view class="user-avatar {{isMember ? 'member-avatar' : ''}}">
+              <text class="avatar-text">{{userInfo.nickname ? userInfo.nickname.substring(0,1) : (userInfo.nickName ? userInfo.nickName.substring(0,1) : '奥')}}</text>
+              <view wx:if="{{isMember}}" class="crown-icon">👑</view>
+            </view>
+          </view>
+          <view class="user-info">
+            <view class="user-name-container">
+              <text class="user-name">{{userInfo.nickname || userInfo.nickName || '奥特曼迷'}}</text>
+              <view class="user-status" wx:if="{{isMember}}">
+                <text class="member-tag">会员</text>
+                <text class="expire-date">有效期至: {{formattedExpireDate}}</text>
+              </view>
+            </view>
+            <button class="update-profile-btn" bindtap="updateUserProfile">
+              <text class="btn-icon">↻</text>更新资料
+            </button>
+          </view>
+        </view>
+      </block>
+    </view>
+  </view>
+
+  <!-- 功能卡片区域 -->
+  <view class="cards-section">
+    <!-- VIP会员专区 -->
+    <view class="card vip-card" bindtap="viewMembership">
+      <view class="card-content">
+        <view class="card-left">
+          <view class="card-title">
+            <text class="vip-badge">VIP</text>
+            <text class="title-text">会员专区</text>
+          </view>
+          <view class="card-desc">
+            <text>{{isMember ? '您已开通会员，有效期至: ' + formattedExpireDate : '每日赠送游戏时长'}}</text>
+          </view>
+        </view>
+        <view class="card-right">
+          <button class="action-button vip-button">{{isMember ? '续费' : '立即开通'}}</button>
+        </view>
+      </view>
+    </view>
+
+    <!-- 我的资产 -->
+    <view class="card asset-card" bindtap="viewAssets">
+      <view class="card-content">
+        <view class="card-left">
+          <view class="card-title">
+            <text class="title-text">我的资产</text>
+          </view>
+          <view class="card-desc asset-value">
+            <text class="value-number">0</text><text class="value-unit">小时</text>
+            <text class="value-number">0</text><text class="value-unit">分</text>
+          </view>
+        </view>
+        <view class="card-right">
+          <view class="card-arrow"></view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 功能列表区域 -->
+  <view class="features-section">
+    <!-- 功能组 -->
+    <view class="feature-group">
+      <view class="feature-item" bindtap="viewFavorites">
+        <view class="feature-icon favorite-icon">
+          <text class="icon-text">★</text>
+        </view>
+        <text class="feature-title">我的收藏</text>
+        <view class="feature-arrow"></view>
+      </view>
+
+      <view class="feature-item" bindtap="contactService">
+        <view class="feature-icon service-icon">
+          <text class="icon-text">☎</text>
+        </view>
+        <text class="feature-title">联系客服</text>
+        <view class="feature-arrow"></view>
+      </view>
+
+      <view class="feature-item" bindtap="aboutUs">
+        <view class="feature-icon about-icon">
+          <text class="icon-text">ℹ</text>
+        </view>
+        <text class="feature-title">关于我们</text>
+        <view class="feature-arrow"></view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 退出登录按钮 -->
+  <view class="logout-section" wx:if="{{isLogged}}">
+    <button class="logout-btn" bindtap="logout">退出登录</button>
+  </view>
+
+  <!-- 登录模态框 -->
+  <view class="login-modal {{showLogin ? 'show' : ''}}" catchtap="hideLoginModal">
+    <view class="modal-content" catchtap="stopPropagation">
+      <view class="modal-header">
+        <text class="modal-title">登录</text>
+        <view class="close-btn" catchtap="hideLoginModal">×</view>
+      </view>
+      <view class="modal-body">
+        <view class="login-icon">
+          <text class="login-icon-text">奥</text>
+        </view>
+        <text class="login-desc">使用微信快速登录奥特曼图鉴</text>
+        <button class="phone-auth-btn" bindtap="wxLogin">
+          微信一键登录
+        </button>
+      </view>
+    </view>
+  </view>
+</view>

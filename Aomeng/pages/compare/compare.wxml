@@ -1,0 +1,113 @@
+<view class="container">
+  <view class="compare-container">
+    <!-- 左侧英雄 -->
+    <view class="hero-selector {{selectedLeft ? 'has-hero' : ''}}" 
+          bindtap="showHeroSelector" 
+          data-position="left">
+      <block wx:if="{{selectedLeft}}">
+        <image class="hero-image" src="{{selectedLeft.image}}" mode="aspectFit"/>
+        <view class="hero-info">
+          <text class="hero-name">{{selectedLeft.name}}</text>
+        </view>
+      </block>
+      <view wx:else class="placeholder">
+        <text class="plus">+</text>
+        <text>选择奥特曼</text>
+      </view>
+    </view>
+
+    <!-- VS -->
+    <view class="vs-container">
+      <text class="vs-text">VS</text>
+    </view>
+
+    <!-- 右侧英雄 -->
+    <view class="hero-selector {{selectedRight ? 'has-hero' : ''}}" 
+          bindtap="showHeroSelector" 
+          data-position="right">
+      <block wx:if="{{selectedRight}}">
+        <image class="hero-image" src="{{selectedRight.image}}" mode="aspectFit"/>
+        <view class="hero-info">
+          <text class="hero-name">{{selectedRight.name}}</text>
+        </view>
+      </block>
+      <view wx:else class="placeholder">
+        <text class="plus">+</text>
+        <text>选择奥特曼</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 对比数据 -->
+  <view class="compare-data" wx:if="{{selectedLeft && selectedRight}}">
+    <view class="data-section">
+      <view class="data-title">力量</view>
+      <view class="data-bar">
+        <view class="bar-left" style="width: 80px">
+          <text class="bar-value">{{selectedLeft.powerValue}}</text>
+        </view>
+        <view class="bar-right" style="width: 80px">
+          <text class="bar-value">{{selectedRight.powerValue}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="data-section">
+      <view class="data-title">速度</view>
+      <view class="data-bar">
+        <view class="bar-left" style="width: 80px">
+          <text class="bar-value">{{selectedLeft.speedValue}}</text>
+        </view>
+        <view class="bar-right" style="width: 80px">
+          <text class="bar-value">{{selectedRight.speedValue}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="data-section">
+      <view class="data-title">身高</view>
+      <view class="data-bar">
+        <view class="bar-left" style="width: 80px">
+          <text class="bar-value">{{selectedLeft.heightValue}}</text>
+        </view>
+        <view class="bar-right" style="width: 80px">
+          <text class="bar-value">{{selectedRight.heightValue}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="data-section">
+      <view class="data-title">体重</view>
+      <view class="data-bar">
+        <view class="bar-left" style="width: 80px">
+          <text class="bar-value">{{selectedLeft.weightValue}}</text>
+        </view>
+        <view class="bar-right" style="width: 80px">
+          <text class="bar-value">{{selectedRight.weightValue}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 英雄选择器弹窗 -->
+  <view class="hero-selector-modal {{showSelector ? 'show' : ''}}" bindtap="closeSelector">
+    <view class="selector-content" catchtap="stopPropagation">
+      <view class="selector-header">
+        <text class="selector-title">选择奥特曼</text>
+        <view class="close-btn" catchtap="closeSelector">×</view>
+      </view>
+      <scroll-view scroll-y class="hero-grid-container">
+        <view class="hero-grid">
+          <view class="hero-item" 
+                wx:for="{{ultramanList}}" 
+                wx:key="id"
+                bindtap="selectHero"
+                data-id="{{item.id}}">
+            <image class="hero-thumb" src="{{item.image}}" mode="aspectFit"/>
+            <text class="hero-name">{{item.name}}</text>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+  </view>
+</view>

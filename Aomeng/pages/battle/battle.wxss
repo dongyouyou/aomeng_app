@@ -1,0 +1,315 @@
+.battle-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: var(--background-gradient);
+  padding: 30rpx;
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 添加装饰元素 */
+.battle-container::before {
+  content: '';
+  position: absolute;
+  top: 10%;
+  left: 5%;
+  width: 60rpx;
+  height: 60rpx;
+  background: var(--accent-color);
+  border-radius: 50%;
+  opacity: 0.6;
+  animation: float 8s ease-in-out infinite;
+  z-index: 1;
+}
+
+.battle-container::after {
+  content: '';
+  position: absolute;
+  bottom: 15%;
+  right: 10%;
+  width: 40rpx;
+  height: 40rpx;
+  background: var(--primary-color);
+  border-radius: 6rpx;
+  transform: rotate(45deg);
+  opacity: 0.6;
+  animation: float 10s ease-in-out infinite;
+  animation-delay: 2s;
+  z-index: 1;
+}
+
+/* 英雄头部展示 */
+.hero-header {
+  display: flex;
+  align-items: center;
+  background-color: var(--card-background);
+  border-radius: var(--border-radius);
+  padding: 20rpx;
+  margin-bottom: 30rpx;
+  box-shadow: var(--card-shadow);
+  border: 4rpx solid var(--primary-color);
+  position: relative;
+  z-index: 2;
+}
+
+.hero-avatar {
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 50%;
+  background-color: #f5f5f5;
+  margin-right: 20rpx;
+  border: 4rpx solid var(--primary-color);
+}
+
+.hero-title {
+  display: flex;
+  flex-direction: column;
+}
+
+.hero-name {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: var(--text-color);
+}
+
+.hero-subtitle {
+  font-size: 24rpx;
+  color: var(--text-secondary);
+  margin-top: 5rpx;
+}
+
+/* GIF展示区域 */
+.gif-display-area {
+  width: 100%;
+  height: auto;
+  background-color: var(--card-background);
+  border-radius: var(--border-radius);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 30rpx;
+  box-shadow: var(--card-shadow);
+  border: 6rpx solid var(--secondary-color);
+  z-index: 2;
+  padding: 0;
+}
+
+.placeholder-text {
+  padding: 60rpx 30rpx;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 32rpx;
+  line-height: 1.5;
+}
+
+.placeholder-text text {
+  background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+  -webkit-background-clip: text;
+  color: transparent;
+  font-weight: bold;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.skill-gif {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 加载中样式 */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40rpx;
+}
+
+.loading-spinner {
+  width: 80rpx;
+  height: 80rpx;
+  border: 8rpx solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: var(--primary-color);
+  animation: spin 1s linear infinite;
+  margin-bottom: 20rpx;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-text {
+  font-size: 28rpx;
+  color: var(--text-secondary);
+}
+
+.loading-gif {
+  display: none;
+}
+
+/* 技能部分 */
+.skills-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20rpx;
+  z-index: 2;
+}
+
+.section-header {
+  margin-bottom: 20rpx;
+  text-align: center;
+}
+
+.section-title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: var(--text-color);
+  position: relative;
+  display: inline-block;
+  padding: 0 20rpx;
+}
+
+.section-title::after {
+  content: '';
+  position: absolute;
+  bottom: -8rpx;
+  left: 0;
+  width: 100%;
+  height: 6rpx;
+  background: var(--button-gradient);
+  border-radius: 6rpx;
+}
+
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20rpx;
+  padding: 10rpx;
+}
+
+.skill-card {
+  background-color: var(--card-background);
+  padding: 20rpx;
+  border-radius: var(--border-radius);
+  box-shadow: var(--card-shadow);
+  border: 3rpx solid #e0e0e0;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+
+.skill-card.active {
+  border-color: var(--primary-color);
+  transform: scale(1.05);
+  box-shadow: 0 10rpx 20rpx rgba(0, 0, 0, 0.15);
+}
+
+.skill-card.active::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(45deg, transparent 70%, var(--accent-color) 100%);
+  opacity: 0.3;
+}
+
+.skill-hover {
+  transform: scale(0.95);
+}
+
+.skill-card-name {
+  font-size: 32rpx;
+  font-weight: bold;
+  margin-bottom: 10rpx;
+  color: var(--text-color);
+}
+
+.skill-card-desc {
+  font-size: 24rpx;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+/* 底部操作区 */
+.action-footer {
+  display: flex;
+  justify-content: center;
+  margin-top: 20rpx;
+  padding: 10rpx;
+  z-index: 2;
+}
+
+.back-btn {
+  background: var(--button-gradient);
+  color: white;
+  border: none;
+  border-radius: 50rpx;
+  padding: 20rpx 60rpx;
+  font-size: 32rpx;
+  font-weight: bold;
+  box-shadow: 0 6rpx 15rpx rgba(255, 107, 107, 0.4);
+  transition: all 0.3s;
+}
+
+.btn-hover {
+  transform: translateY(3rpx);
+  box-shadow: 0 2rpx 8rpx rgba(255, 107, 107, 0.4);
+}
+
+/* 错误状态 */
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40rpx;
+}
+
+.error-text {
+  font-size: 32rpx;
+  color: #ff4d4f;
+  font-weight: bold;
+  margin: 20rpx 0 10rpx;
+}
+
+.error-desc {
+  font-size: 26rpx;
+  color: var(--text-secondary);
+  margin-bottom: 20rpx;
+}
+
+.retry-btn {
+  background: var(--button-gradient);
+  color: white;
+  border: none;
+  border-radius: 50rpx;
+  padding: 10rpx 40rpx;
+  font-size: 26rpx;
+  font-weight: bold;
+  margin-top: 10rpx;
+}
+
+.skill-name-display {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  color: #fff;
+  font-size: 32rpx;
+  font-weight: bold;
+  text-shadow: 0 2rpx 5rpx rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.5);
+  padding: 10rpx 0;
+}

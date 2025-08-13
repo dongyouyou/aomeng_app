@@ -1,0 +1,229 @@
+<view class="container safe-area-bottom">
+  <!-- 会员锁定提示，当需要会员但用户不是会员时显示 -->
+  <view class="member-lock-overlay" wx:if="{{needMembership}}">
+    <view class="lock-content">
+      <view class="lock-icon">🔒</view>
+      <view class="lock-title">会员专享内容</view>
+      <view class="lock-desc">开通会员即可查看全部奥特曼英雄资料</view>
+      <button class="lock-btn" bindtap="goToMembership">立即开通</button>
+    </view>
+  </view>
+
+  <view class="detail-content" wx:if="{{selectedHero}}">
+    <!-- 内容区域 - 整个页面统一滚动 -->
+    <scroll-view scroll-y class="detail-body">
+      <!-- 顶部图片区 -->
+      <image class="detail-image" src="{{selectedHero.image}}" mode="aspectFit"/>
+      
+      <!-- 会员标签提示 -->
+      <view class="member-tag" wx:if="{{needMembership}}">
+        <view class="tag-icon">👑</view>
+        <view class="tag-text">会员专享</view>
+      </view>
+      
+      <!-- 主标签页导航 - 位于图片下方 -->
+      <view class="tab-nav">
+        <view class="tab-item {{currentTab === 'info' ? 'active' : ''}}" 
+              bindtap="switchTab" 
+              data-tab="info">基本信息</view>
+        <view class="tab-item {{currentTab === 'story' ? 'active' : ''}}" 
+              bindtap="switchTab" 
+              data-tab="story">英雄故事</view>
+        <view class="tab-item {{currentTab === 'interaction' ? 'active' : ''}}" 
+              bindtap="switchTab" 
+              data-tab="interaction">娱乐专区</view>
+      </view>
+      
+      <!-- 基本信息标签页 -->
+      <view class="tab-content" hidden="{{currentTab !== 'info'}}">
+        <text class="detail-desc">{{selectedHero.description}}</text>
+
+        <view class="detail-section">
+          <text class="section-title">能力值</text>
+          <view class="stats-list">
+            <view class="stat-item">
+              <text class="stat-label">力量</text>
+              <view class="stat-bar" style="flex: none !important; width: 200px !important; max-width: 200px !important;">
+                <view class="stat-value" style="width: 200px"></view>
+              </view>
+              <text class="stat-number">{{selectedHero.power || '85'}}</text>
+            </view>
+            <view class="stat-item">
+              <text class="stat-label">速度</text>
+              <view class="stat-bar" style="flex: none !important; width: 200px !important; max-width: 200px !important;">
+                <view class="stat-value" style="width: 200px"></view>
+              </view>
+              <text class="stat-number">{{selectedHero.speed || '90'}}</text>
+            </view>
+            <view class="stat-item">
+              <text class="stat-label">身高</text>
+              <view class="stat-bar" style="flex: none !important; width: 200px !important; max-width: 200px !important;">
+                <view class="stat-value" style="width: 200px"></view>
+              </view>
+              <text class="stat-number">{{selectedHero.height || '50m'}}</text>
+            </view>
+            <view class="stat-item">
+              <text class="stat-label">体重</text>
+              <view class="stat-bar" style="flex: none !important; width: 200px !important; max-width: 200px !important;">
+                <view class="stat-value" style="width: 200px"></view>
+              </view>
+              <text class="stat-number">{{selectedHero.weight || '35000t'}}</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="detail-section">
+          <view class="feature-title-container">
+            <text class="section-title character-feature-title">角色特点</text>
+          </view>
+          <text class="hero-story">{{selectedHero.personality || '这位英雄具有勇敢无畏的精神，富有正义感，总是挺身而出保护地球和人类。'}}</text>
+          
+          <view class="hero-actions">
+            <view class="action-button like-button {{isLiked ? 'active' : ''}}" bindtap="toggleLike">
+              <text class="action-icon">♥</text>
+              <text class="action-label">喜欢</text>
+            </view>
+            <view class="action-button" bindtap="showComments">
+              <text class="action-icon">💬</text>
+              <text class="action-label">评论</text>
+            </view>
+            <view class="action-button" bindtap="shareHero">
+              <text class="action-icon">↗</text>
+              <text class="action-label">分享</text>
+            </view>
+          </view>
+        </view>
+      </view>
+        
+      <!-- 英雄故事标签页 -->
+      <view class="tab-content" hidden="{{currentTab !== 'story'}}">
+        <view class="story-title">{{selectedHero.name}}的故事</view>
+        
+        <!-- 章节选择器 - 简化的样式 -->
+        <view class="chapter-selector">
+          <scroll-view scroll-x="true" class="chapter-scroll">
+            <view class="chapter-tabs">
+              <view 
+                wx:for="{{heroStoryChapters}}" 
+                wx:key="id" 
+                class="chapter-tab {{currentChapter === item.id ? 'active' : ''}}"
+                data-id="{{item.id}}"
+                bindtap="switchChapter">
+                {{item.title}}
+              </view>
+            </view>
+          </scroll-view>
+        </view>
+        
+        <!-- 视频播放区 -->
+        <view class="story-video-container">
+          <!-- 当有视频URL时显示视频播放器 -->
+          <block wx:if="{{currentChapterData.videoUrl && !videoLoadFailed}}">
+            <video 
+              id="storyVideo"
+              class="story-video" 
+              src="{{currentChapterData.videoUrl}}"
+              controls="{{true}}"
+              show-center-play-btn="{{true}}"
+              bindplay="onVideoPlay"
+              bindpause="onVideoPause"
+              bindended="onVideoEnd"
+              binderror="onVideoError"
+              enable-play-gesture="{{true}}"
+              enable-progress-gesture="{{true}}"
+              show-fullscreen-btn="{{true}}"
+              show-progress="{{true}}"
+              show-mute-btn="{{true}}"
+              auto-pause-if-navigate="{{false}}"
+              auto-pause-if-open-native="{{false}}"
+              vslide-gesture="{{true}}"
+              vslide-gesture-in-fullscreen="{{true}}"
+              picture-in-picture-mode="push"
+              object-fit="contain"
+              bindwaiting="onVideoWaiting"
+              bindtimeupdate="onTimeUpdate"
+              initial-time="0"
+              title="{{currentChapterData.title}}">
+            </video>
+          </block>
+          
+          <!-- 当视频不存在或加载失败时显示提示 -->
+          <view wx:else class="video-placeholder">
+            <view class="placeholder-icon">🎥</view>
+            <view class="placeholder-text">视频即将上线，敬请期待</view>
+          </view>
+        </view>
+        
+        <!-- 故事内容区 - 紧凑无缝连接设计 -->
+        <view class="story-wrapper">
+          <view class="story-card no-space">
+            <view class="story-header">
+              <text class="story-chapter-title">{{currentChapterData.title}}</text>
+              <text class="story-chapter-subtitle">{{currentChapterData.subtitle}}</text>
+            </view>
+            
+            <view class="story-body">
+              <text class="story-text">{{currentChapterData.content || selectedHero.story || selectedHero.emotionalStory || '这位英雄的故事正在创作中，敬请期待...'}}</text>
+            </view>
+            
+            <!-- 只在有图片时显示图片，且直接使用第一张图片 -->
+            <block wx:if="{{currentChapterData.images && currentChapterData.images.length > 0}}">
+              <image class="direct-image" 
+                     src="{{currentChapterData.images[0]}}" 
+                     mode="aspectFit"
+                     bindtap="previewImage" 
+                     data-src="{{currentChapterData.images[0]}}" 
+                     data-urls="{{currentChapterData.images}}"></image>
+            </block>
+          </view>
+          
+          <!-- 推荐阅读无缝连接 -->
+          <view class="detail-section recommended-section no-space-top">
+            <text class="section-title">推荐阅读</text>
+            <scroll-view class="recommended-scroll" scroll-x>
+              <view class="recommended-list">
+                <view class="recommended-item" 
+                  wx:for="{{recommendedStories}}" 
+                  wx:key="id"
+                  bindtap="goToRecommendedStory"
+                  data-id="{{item.id}}"
+                  data-key="{{item.key}}">
+                  <image class="recommended-image" src="{{item.image}}" mode="aspectFit"></image>
+                  <view class="recommended-info">
+                    <text class="recommended-title">{{item.title}}</text>
+                    <text class="recommended-desc">{{item.description}}</text>
+                  </view>
+                </view>
+              </view>
+            </scroll-view>
+          </view>
+        </view>
+      </view>
+        
+      <!-- 互动专区标签页 -->
+      <view class="tab-content" hidden="{{currentTab !== 'interaction'}}">
+        <view class="interactions">
+          <view class="interaction-card" bindtap="goBattlePage">
+            <view class="interaction-icon">⚔️</view>
+            <view class="interaction-label">对战模式</view>
+          </view>
+          <view class="interaction-card" bindtap="startQuiz">
+            <view class="interaction-icon">❓</view>
+            <view class="interaction-label">知识问答</view>
+          </view>
+          <view class="interaction-card" bindtap="viewGallery">
+            <view class="interaction-icon">🖼️</view>
+            <view class="interaction-label">图片集</view>
+          </view>
+          <view class="interaction-card" bindtap="viewVideo">
+            <view class="interaction-icon">▶️</view>
+            <view class="interaction-label">视频集</view>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+  
+  <!-- 返回顶部按钮 -->
+  <view class="back-to-top {{showBackToTop ? 'show' : ''}}" bindtap="scrollToTop">↑</view>
+</view> 
